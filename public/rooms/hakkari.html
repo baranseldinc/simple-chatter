@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Chatter | Hakkari </title>
+    <style>
+        form {
+            padding: 20px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            padding-right: 50px;
+        }
+
+        #messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+
+        #messages li {
+            padding: 5px 10px;
+        }
+
+        #messages li:nth-child(odd) {
+            background-color: #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <ul id="messages"></ul>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <form action="">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="" autocomplete="off" id="m"
+                            aria-describedby="button-addon2">
+                        <button class="btn btn-secondary" type="button" id="button-addon2">Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const room = 'hakkari';
+
+        const socket = io('/tech');
+        $('form').submit(() => {
+            const msg = $('#m').val().trim();
+
+            if (msg) {
+                socket.emit('message', { msg, room });
+                $('#m').val('');
+            }
+            return false;
+        });
+
+        socket.on('connect', () => {
+            socket.emit('join', { room });
+        });
+
+        socket.on('message', data => {
+            
+            $('#messages').append(`<li><b>${data.nick}: </b>${data.message}</li>`)
+        })
+    </script>
+</body>
+
+</html>
