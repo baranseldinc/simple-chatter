@@ -24,4 +24,5 @@ Simple Chatter uses a number of open source projects to work properly:
 
 
 
-_Enjoy chat_
+Let's get started to chat
+[https://realtime-chatter.herokuapp.com/]
